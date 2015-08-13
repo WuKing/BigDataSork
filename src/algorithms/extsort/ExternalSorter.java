@@ -69,6 +69,7 @@ public class ExternalSorter
 			}
 
 		}
+		System.out.println("开始归并");
 		RecordStore[] stores=mediator.getProductedStores();
 //		LoserTree  lt=new LoserTree(stores);
 		WinnerTree  lt=new WinnerTree(stores);
@@ -114,7 +115,7 @@ public class ExternalSorter
 				//排序完成的文件名  test_sorted
 				ResultAcceptor ra = new FileRecordStore("unsorted.txt",sql);
 				//700000 80M
-				sorter.sort(100000, store, mediator, ra);
+				sorter.sort(3, store, mediator, ra);
 			}
 			
 		}
