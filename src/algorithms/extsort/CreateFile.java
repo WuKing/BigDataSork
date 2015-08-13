@@ -308,7 +308,7 @@ public class CreateFile
 		Random r = new Random();
 
 		// for (int i = 0; i < 100000000; i++)//5.5G
-		for (int i = 0; i < 1000; i++)//5.5G
+		for (int i = 0; i < 10; i++)//5.5G
 		{
 			//ps.println(r.nextInt(10000000) + "             this  a line line aaaaaaaaa!");
 			ps.println(cf.CreateDateBase());

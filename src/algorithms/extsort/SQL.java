@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,7 +35,7 @@ public class SQL
 	// 是否去重
 	public boolean distinct = true;
 
-	public int limit = -1;
+	public BigInteger limit = new BigInteger("-1");
 	// 是否已经创建了数据库
 	private boolean create = false;
 
@@ -454,11 +455,11 @@ public class SQL
 					//检查LIMIT
 					if((now = str.indexOf("LIMIT"))==-1)
 					{
-						limit = -1;
+						limit = new BigInteger("-1");
 					}
 					else
 					{
-						limit = Integer.valueOf(str.substring(now + "LIMIT".length()+1));
+						limit = new BigInteger(str.substring(now + "LIMIT".length()+1));
 					}
 					
 					

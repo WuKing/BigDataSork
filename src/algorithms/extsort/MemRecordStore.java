@@ -4,6 +4,7 @@
 package algorithms.extsort;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Random;
 
 /**
@@ -128,7 +129,7 @@ public class MemRecordStore implements RecordStore
 	}
 
 	@Override
-	public Record readNextRecord(long index) throws IOException
+	public Record readNextRecord(BigInteger index) throws IOException
 	{
 		// TODO Auto-generated method stub
 		return null;

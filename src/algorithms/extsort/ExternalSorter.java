@@ -18,19 +18,21 @@ public class ExternalSorter
 	public void sort(int heapSize, RecordStore source, RunAcceptor mediator,
 			ResultAcceptor ra) throws IOException
 	{
-		int num = 1;
-		long indexOnce=0;;
-		int tempLimit = ((FileRecordStore)source).sql.limit;
+		BigInteger nowLimit = new BigInteger("1");
+		BigInteger bigOne = new BigInteger("1");
+		BigInteger bigMinusOne = new BigInteger("-1");
+		BigInteger indexOnce= new BigInteger("0");
+		BigInteger tempLimit = ((FileRecordStore)source).sql.limit;
 		MinHeap<Record> heap = new MinHeap<Record>(Record.class, heapSize);
 		for (int i = 0; i < heapSize; i++)
 		{
-			Record r = source.readNextRecord(indexOnce++);//******
+			Record r = source.readNextRecord(indexOnce =indexOnce.add(bigOne));//******
 			if (r.isNull())
 				break;
 			heap.insert(r);
 		}
 
-		Record readR = source.readNextRecord(indexOnce++);//****
+		Record readR = source.readNextRecord(indexOnce = indexOnce.add(bigOne));//****
 		
 		
 		while (!readR.isNull() || !heap.isEmpty())
@@ -55,12 +57,12 @@ public class ExternalSorter
 					} else
 						heap.insert(readR);
 				}
-				readR = source.readNextRecord(indexOnce++);//*****
+				readR = source.readNextRecord(indexOnce = indexOnce.add(bigOne));//*****
 
 			}
 			// done one run
 			mediator.closeRun();
-
+			//System.out.println(indexOnce);
 			// prepare for next run
 			heap.reverse();
 			while (!heap.isFull() && !readR.isNull())
@@ -82,10 +84,10 @@ public class ExternalSorter
 		Record least=lt.nextLeastRecord();
 		
 		ra.start();
-		
-		while((!least.isNull()) &&  (tempLimit!=-1 && num<=tempLimit)  )
+		//now<=temp   temp!=-1
+		while(   (  !least.isNull()  ) && (  (tempLimit.compareTo(bigMinusOne)!=-1)   && (nowLimit.compareTo(tempLimit)<=0)  ) )
 		{
-			num++;
+			nowLimit = nowLimit.add(bigOne);
 			ra.acceptRecord(least);
 			least=lt.nextLeastRecord();
 		}
@@ -93,7 +95,7 @@ public class ExternalSorter
 		
 		for(int i=0;i<stores.length;i++)
 		{
-			stores[i].destroy();
+			//stores[i].destroy();
 		}
 	}
 	public static void main(String[] args) throws IOException
@@ -120,7 +122,7 @@ public class ExternalSorter
 				//排序完成的文件名  test_sorted
 				ResultAcceptor ra = new FileRecordStore("unsorted.txt",sql);
 				//700000 80M
-				sorter.sort(10000, store, mediator, ra);
+				sorter.sort(3, store, mediator, ra);
 				System.out.println("归并完成");
 			}
 			

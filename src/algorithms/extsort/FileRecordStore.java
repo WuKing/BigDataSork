@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 /**
@@ -93,10 +94,10 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			{
 				return 1;
 			}
-			
+
 			for (int i = 0; i < sql.useFielRuleDisvisible.length; i++)
 			{
-				//System.out.println(sql.useFielRuleDisvisibleType[i]);
+				// System.out.println(sql.useFielRuleDisvisibleType[i]);
 				if (sql.useFielRuleDisvisibleType[i].equals("Float"))
 				{
 					tempFloat = ((float) Float.valueOf(all.get(i)) - (float) Float.valueOf(other.all.get(i)));
@@ -133,38 +134,38 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 				}
 				else if (sql.useFielRuleDisvisibleType[i].equals("String"))
 				{
-					String tempThis  = all.get(i);
+					String tempThis = all.get(i);
 					String tempOther = other.all.get(i);
 					// 这里注意判断FIRST LAST CHINESE
-					if (tempThis.equals("null")||tempOther.equals("null"))
+					if (tempThis.equals("null") || tempOther.equals("null"))
 					{
 						if (sql.useFielRuleDisvisibleRule[i].equals("LAST"))
 						{
-							
-							if((tempThis.equals("null")) && (!tempOther.equals("null")))
+
+							if ((tempThis.equals("null")) && (!tempOther.equals("null")))
 							{
 								return 1;
 							}
-							else if((!tempThis.equals("null")) && (tempOther.equals("null")))
+							else if ((!tempThis.equals("null")) && (tempOther.equals("null")))
 							{
 								return -1;
 							}
-								
+
 						}
 						else
 						{
-							
-							if((tempThis.equals("null")) && (!tempOther.equals("null")))
+
+							if ((tempThis.equals("null")) && (!tempOther.equals("null")))
 							{
 								return -1;
 							}
-							else if((!tempThis.equals("null")) && (tempOther.equals("null")))
+							else if ((!tempThis.equals("null")) && (tempOther.equals("null")))
 							{
 								return 1;
 							}
 
 						}
-						
+
 					}
 					else
 					{
@@ -204,11 +205,11 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 					}
 				}
 			}
-			if(sql.useFielRuleDisvisible.length == all.size()-1)
+			if (sql.useFielRuleDisvisible.length == all.size() - 1)
 			{
-				return ((int) Integer.valueOf(all.get(sql.useFielRuleDisvisible.length)) - (int) Integer.valueOf(other.all.get(sql.useFielRuleDisvisible.length)));
+				return (new BigInteger(all.get(sql.useFielRuleDisvisible.length)).compareTo(new BigInteger(other.all.get(sql.useFielRuleDisvisible.length))));
 			}
-			
+
 			return 0;
 		}
 
@@ -332,14 +333,15 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			}
 			// System.out.println(val);
 			_Record ret = new _Record(all, line, sql);
-			
+
 			return ret;
 		}
 
 		return _Record.NULL_RECORD;
 	}
-	//新增的方法用于记录文件的行号
-	public Record readNextRecord(long index) throws IOException
+
+	// 新增的方法用于记录文件的行号
+	public Record readNextRecord(BigInteger index) throws IOException
 	{
 		//
 		if (eof)
@@ -367,7 +369,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			{
 				all.add(intfirst[sql.useFielRuleDisvisible[i]]);
 			}
-			all.add(index + "");
+			all.add(index.toString());
 			// System.out.println(val);
 			_Record ret = new _Record(all, line, sql);
 			return ret;
@@ -376,10 +378,6 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		return _Record.NULL_RECORD;
 	}
 
-	
-	
-	
-	
 	@Override
 	public void acceptRecord(Record rec) throws IOException
 	{
