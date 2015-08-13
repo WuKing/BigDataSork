@@ -15,6 +15,7 @@ public class WinnerTree
 
 	private volatile Record[] nodes;
 	private RecordStore[] stores;
+	private RecordStore[] storesOnlyOnce;
 	private volatile int[] indexes;
 
 	private int lowExt;// how many leafs at the lowest level
@@ -43,10 +44,10 @@ public class WinnerTree
 	{
 
 		nLeaf = stores.length;
-
 		nodes = new Record[nLeaf];
 		indexes = new int[nLeaf - 1];
 		this.stores = stores;
+		this.storesOnlyOnce = stores;
 		for (int i = 0; i < nLeaf; i++)
 		{
 			nodes[i] = stores[i].readNextRecord();
@@ -117,8 +118,7 @@ public class WinnerTree
 			roff = indexes[rc];
 
 		}
-		// Æ¥ÅäÐ¡ÓÚ0
-		//System.out.println(nodes[loff] + "           VS        " + nodes[roff]);
+
 		
 		if (nodes[loff].compareTo(nodes[roff]) < 0)
 		{
@@ -132,13 +132,20 @@ public class WinnerTree
 
 	public Record nextLeastRecord() throws IOException
 	{
+
+		if(stores.length==1)
+		{
+			return storesOnlyOnce[0].readNextRecord();
+		}
+		
+		
 		int winner = indexes[0];
 		Record rec = nodes[winner];
-
+		
 		nodes[winner] = stores[winner].readNextRecord();
-
+		//System.out.println(nodes[winner]);
 		play(winner);
-
+		
 		return rec;
 	}
 
@@ -159,8 +166,10 @@ public class WinnerTree
 		}
 		for (; p > 0; p = (p - 1) / 2)
 		{
+		
 			_play(p);
 		}
+		
 		_play(0);
 
 	}

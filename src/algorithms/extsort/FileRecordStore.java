@@ -162,7 +162,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 	private String fileName;
 	private BufferedReader reader;
 	private PrintStream ps;
-	private SQL sql;
+	public SQL sql;
 
 	boolean eof;
 	
@@ -240,8 +240,6 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		}
 		String line = reader.readLine();
 
-		//
-
 		// String head = line.substring(0, 10).trim();
 
 		// 分析字符串结构 只截取前半部分数字，还有后部分的结构
@@ -256,23 +254,12 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			{
 				all.add(intfirst[sql.useFielRuleDisvisible[i]]);
 			}
-			//生成规则 txt
-			String tempStr = "";
-			
-			for(int i=0;i<sql.useFielRuleVisible.length;i++)
-			{
-				tempStr = "," + sql.tableFieldName[sql.useFielRuleVisible[i]] + tempStr;
-			}
-			//tempStr = tempStr.substring(1,tempS)
-			
-			
-			int val = Integer.valueOf(intfirst[0].trim());
 			// System.out.println(val);
 			 _Record ret = new _Record(all,line,sql);
 			 return ret;
 		}
 	
-		return null;
+		return _Record.NULL_RECORD;
 	}
 
 	@Override

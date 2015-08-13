@@ -17,6 +17,8 @@ public class ExternalSorter
 	public void sort(int heapSize, RecordStore source, RunAcceptor mediator,
 			ResultAcceptor ra) throws IOException
 	{
+		int num = 1;
+		int tempLimit = ((FileRecordStore)source).sql.limit;
 		MinHeap<Record> heap = new MinHeap<Record>(Record.class, heapSize);
 		for (int i = 0; i < heapSize; i++)
 		{
@@ -61,7 +63,6 @@ public class ExternalSorter
 			heap.reverse();
 			while (!heap.isFull() && !readR.isNull())
 			{
-				
 				heap.insert(readR);
 				readR = source.readNextRecord();
 
@@ -71,13 +72,14 @@ public class ExternalSorter
 		RecordStore[] stores=mediator.getProductedStores();
 //		LoserTree  lt=new LoserTree(stores);
 		WinnerTree  lt=new WinnerTree(stores);
-		
+		//System.out.println(stores.length);
 		Record least=lt.nextLeastRecord();
 		
 		ra.start();
-		while(!least.isNull())
+		
+		while((!least.isNull()) &&  (tempLimit!=-1 && num<=tempLimit)  )
 		{
-			//System.out.println(least);
+			num++;
 			ra.acceptRecord(least);
 			least=lt.nextLeastRecord();
 		}
@@ -112,7 +114,7 @@ public class ExternalSorter
 				//排序完成的文件名  test_sorted
 				ResultAcceptor ra = new FileRecordStore("unsorted.txt",sql);
 				//700000 80M
-				sorter.sort(10, store, mediator, ra);
+				sorter.sort(100000, store, mediator, ra);
 			}
 			
 		}

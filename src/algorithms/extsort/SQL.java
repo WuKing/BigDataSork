@@ -347,10 +347,10 @@ public class SQL
 				// ≈–∂œ «∑Ò»± °œ‘ æ
 				if (str.indexOf("ORDER BY") == -1)
 				{
-					useFielRuleDisvisible = new int[tableFieldName.length];
-					for (int i = 0; i < tableFieldName.length; i++)
+					useFielRuleDisvisible = new int[useFielRuleVisible.length];
+					for (int i = 0; i < useFielRuleVisible.length; i++)
 					{
-						useFielRuleDisvisible[i] = i;
+						 useFielRuleVisible[i] = i;
 					}
 				} 
 				else
