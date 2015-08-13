@@ -10,4 +10,5 @@ package algorithms.extsort;
 public interface Record extends Comparable<Record>
 {
 	boolean isNull();
+	String toTrueString();
 }

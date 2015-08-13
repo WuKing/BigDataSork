@@ -73,10 +73,11 @@ public class ExternalSorter
 		WinnerTree  lt=new WinnerTree(stores);
 		
 		Record least=lt.nextLeastRecord();
+		
 		ra.start();
 		while(!least.isNull())
 		{
-			System.out.println(least);
+			//System.out.println(least);
 			ra.acceptRecord(least);
 			least=lt.nextLeastRecord();
 		}
@@ -92,7 +93,7 @@ public class ExternalSorter
 		// RecordStore store=new MemRecordStore(60004,true);
 		// RunAcceptor mediator=new MemRunAcceptor();
 		// ResultAcceptor ra=new MemResultAcceptor();
-		
+		SQL sql1 = new SQL("CREATE TABLE mytable(column1 INT NOT NULL,column2 NUMERIC(8,4),column3 CHAR(32),column4 VARCHAR(256) NOT NULL,column5 VARCHAR(256));");
 		SQL sql = new SQL("SELECT  DISTINCT column1,column5,column3 FROM mytable ORDER BY column1 ,column5 NULLS FIRST LIMIT 1000;");
 		if(sql.succeed())
 		{
@@ -110,8 +111,8 @@ public class ExternalSorter
 				RunAcceptor mediator = new FileRunAcceptor("unsort",sql);
 				//排序完成的文件名  test_sorted
 				ResultAcceptor ra = new FileRecordStore("unsorted.txt",sql);
-
-				sorter.sort(3, store, mediator, ra);
+				//700000 80M
+				sorter.sort(10, store, mediator, ra);
 			}
 			
 		}

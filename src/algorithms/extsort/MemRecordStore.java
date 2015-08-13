@@ -48,6 +48,13 @@ public class MemRecordStore implements RecordStore
 			return String.valueOf(value);
 		}
 
+		@Override
+		public String toTrueString()
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	}
 
 	private _Record[] recs;

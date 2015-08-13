@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class FileRecordStore implements RecordStore, ResultAcceptor
 {
 
-	// 一个内部类 存放数据结构（？）
+	// 一个内部类 存放数据结构
 	private static class _Record implements Record
 	{
 
@@ -53,13 +53,13 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		@Override
 		public boolean isNull()
 		{
-			
+			//System.out.println(this);
 			if (all==null || all.size()==0 || all.isEmpty())
 			{
-				System.out.println(all + "判断是否null" + true);
+				//System.out.println(all + "判断是否null" + true);
 				return true;
 			}
-			System.out.println(all + "判断是否null" + false);
+			//System.out.println(all + "判断是否null" + false);
 			return false;
 			//return this == NULL_RECORD;
 		}
@@ -81,9 +81,17 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			if (other == this)
 				return 0;
 			// 开启判断模式
-			
-			for (int i = 0; i <= all.size(); i++)
+			if(other.isNull())
 			{
+				return -1;
+			}
+			if(this.isNull())
+			{
+				return 1;
+			}
+			for (int i = 0; i < all.size(); i++)
+			{
+				//System.out.println(i);
 				if (sql.useFielRuleDisvisibleType[i].equals("Float"))
 				{
 					float tempFloat = 0;
@@ -123,13 +131,10 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 					{
 						return ((String) this.all.get(i)).compareTo((String) other.all.get(i));
 					}
-					
-					
+							
 				}
 			}
-			
 			return 0;
-		
 		}
 
 		public String toString()
@@ -137,6 +142,19 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			if (this == NULL_RECORD)
 				return "NULL_RECORD";
 			return txt;
+		}
+		
+		
+		public String  toTrueString()
+		{
+			if (this == NULL_RECORD)
+				return "NULL_RECORD";
+			String str = all.get(0);
+			for(int i=1;i<all.size();i++)
+			{
+				str = str + "," +  all.get(i) ; 
+			}
+			return str;
 		}
 
 	}
@@ -161,7 +179,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 
 	public FileRecordStore(String name, SQL sql)
 	{
-		fileName = name;
+		fileName = sql.tableName + "\\" +  name;
 		this.sql = sql;
 	}
 
@@ -210,6 +228,8 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			return _Record.NULL_RECORD;
 		if (reader == null)
 		{
+			//读文件
+			//System.out.println(fileName);
 			InputStream in = new FileInputStream(fileName);
 			reader = new BufferedReader(new InputStreamReader(in), 12 * 1024);
 		}
@@ -267,7 +287,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			throw new IOException(" sorted error!!!");
 
 		}
-		ps.println(rec.toString());
+		ps.println(rec.toTrueString());
 		prev = rec;
 	}
 

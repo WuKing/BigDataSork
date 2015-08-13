@@ -308,13 +308,14 @@ public class CreateFile
 		Random r = new Random();
 
 		// for (int i = 0; i < 100000000; i++)//5.5G
-		for (int i = 0; i < 10; i++)//5.5G
+		for (int i = 0; i < 100; i++)//5.5G
 		{
 			//ps.println(r.nextInt(10000000) + "             this  a line line aaaaaaaaa!");
 			ps.println(cf.CreateDateBase());
 			//System.out.println(cf.CreateDateBase());
 		}
 		ps.close();
+		System.out.println("Create Succeed");
 	}
 
 }
