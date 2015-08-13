@@ -97,7 +97,7 @@ public class ExternalSorter
 		// RunAcceptor mediator=new MemRunAcceptor();
 		// ResultAcceptor ra=new MemResultAcceptor();
 		SQL sql1 = new SQL("CREATE TABLE mytable(column1 INT NOT NULL,column2 NUMERIC(8,4),column3 CHAR(32),column4 VARCHAR(256) NOT NULL,column5 VARCHAR(256));");
-		SQL sql = new SQL("SELECT  DISTINCT column1,column5,column3 FROM mytable ORDER BY column1 ,column5 NULLS FIRST LIMIT 1000;");
+		SQL sql = new SQL("SELECT  DISTINCT column1,column5,column3 FROM mytable ORDER BY column1 ,column5 LIMIT 1000;");
 		if(sql.succeed())
 		{
 			if(sql.getCreate())

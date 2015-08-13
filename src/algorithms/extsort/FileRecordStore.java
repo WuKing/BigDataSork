@@ -29,8 +29,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 
 		// static final _Record NULL_RECORD = new _Record(Integer.MAX_VALUE,
 		// "");
-		
-		
+
 		static final _Record NULL_RECORD = new _Record(null, "", new SQL(""));
 		// int value;
 		private String txt;
@@ -53,15 +52,15 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		@Override
 		public boolean isNull()
 		{
-			//System.out.println(this);
-			if (all==null || all.size()==0 || all.isEmpty())
+			// System.out.println(this);
+			if (all == null || all.size() == 0 || all.isEmpty())
 			{
-				//System.out.println(all + "判断是否null" + true);
+				// System.out.println(all + "判断是否null" + true);
 				return true;
 			}
-			//System.out.println(all + "判断是否null" + false);
+			// System.out.println(all + "判断是否null" + false);
 			return false;
-			//return this == NULL_RECORD;
+			// return this == NULL_RECORD;
 		}
 
 		// @Override
@@ -80,97 +79,129 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			float tempFloat = 0;
 			int tempInt = 0;
 			int tempString = 0;
-			
-			
+
 			_Record other = (_Record) o;
 			if (other == this)
 				return 0;
 			// 开启判断模式
-			if(other.isNull())
+			if (other.isNull())
 			{
 				return -1;
 			}
-			if(this.isNull())
+			if (this.isNull())
 			{
 				return 1;
 			}
 			for (int i = 0; i < all.size(); i++)
 			{
-				System.out.println(i);
+				//System.out.println(sql.useFielRuleDisvisibleType[i]);
 				if (sql.useFielRuleDisvisibleType[i].equals("Float"))
 				{
 					tempFloat = ((float) Float.valueOf(all.get(i)) - (float) Float.valueOf(other.all.get(i)));
 					if (tempFloat > 0)
 					{
 						return 1;
-					} else if (tempFloat < 0)
+					}
+					else if (tempFloat < 0)
 					{
 						return -1;
-					} else
+					}
+					else
 					{
 
 					}
 
-				} 
+				}
 				else if (sql.useFielRuleDisvisibleType[i].equals("Integer"))
 				{
 					tempInt = ((int) Integer.valueOf(all.get(i)) - (int) Integer.valueOf(other.all.get(i)));
 					if (tempInt > 0)
 					{
 						return 1;
-					} else if (tempInt < 0)
+					}
+					else if (tempInt < 0)
 					{
 						return -1;
-					} else
-					{
-
-					}
-				
-				
-				
-				
-				} 
-				else if (sql.useFielRuleDisvisibleType[i].equals("String"))
-				{
-					//这里注意判断FIRST LAST CHINESE
-					if(sql.useFielRuleDisvisibleRule[i].equals("FIRST"))
-					{
-						return 1;
-					}
-					else if(sql.useFielRuleDisvisibleRule[i].equals("LAST"))
-					{
-						return -1;
-					}
-					else if(sql.useFielRuleDisvisibleRule[i].equals("CHINESE"))
-					{
-						tempString = GetPinYin.getPingYin((String) this.all.get(i)).compareTo(GetPinYin.getPingYin((String) other.all.get(i)));
-						if (tempString > 0)
-						{
-							return 1;
-						} else if (tempString < 0)
-						{
-							return -1;
-						} else
-						{
-
-						}
-					
 					}
 					else
 					{
-						tempString = ((String) this.all.get(i)).compareTo((String) other.all.get(i));
-						if (tempString > 0)
+
+					}
+
+				}
+				else if (sql.useFielRuleDisvisibleType[i].equals("String"))
+				{
+					String tempThis  = all.get(i);
+					String tempOther = other.all.get(i);
+					// 这里注意判断FIRST LAST CHINESE
+					if (tempThis.equals("null")||tempOther.equals("null"))
+					{
+						System.out.println("null");
+						
+						if (sql.useFielRuleDisvisibleRule[i].equals("LAST"))
 						{
-							return 1;
-						} else if (tempString < 0)
+							
+							if((tempThis.equals("null")) && (!tempOther.equals("null")))
+							{
+								return 1;
+							}
+							else if((!tempThis.equals("null")) && (tempOther.equals("null")))
+							{
+								return -1;
+							}
+								
+						}
+						else
 						{
-							return -1;
-						} else
-						{
+							
+							if((tempThis.equals("null")) && (!tempOther.equals("null")))
+							{
+								return -1;
+							}
+							else if((!tempThis.equals("null")) && (tempOther.equals("null")))
+							{
+								return 1;
+							}
 
 						}
+						
 					}
-							
+					else
+					{
+						if (sql.useFielRuleDisvisibleRule[i].equals("CHINESE"))
+						{
+							tempString = GetPinYin.getPingYin((String) this.all.get(i)).compareTo(GetPinYin.getPingYin((String) other.all.get(i)));
+							if (tempString > 0)
+							{
+								return 1;
+							}
+							else if (tempString < 0)
+							{
+								return -1;
+							}
+							else
+							{
+
+							}
+
+						}
+						else
+						{
+							tempString = ((String) this.all.get(i)).compareTo((String) other.all.get(i));
+							if (tempString > 0)
+							{
+								return 1;
+							}
+							else if (tempString < 0)
+							{
+								return -1;
+							}
+							else
+							{
+
+							}
+						}
+					}
 				}
 			}
 			return 0;
@@ -182,18 +213,17 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 				return "NULL_RECORD";
 			return txt;
 		}
-		
-		
-		public String  toTrueString()
+
+		public String toTrueString()
 		{
 			if (this == NULL_RECORD)
 				return "NULL_RECORD";
-			
+
 			String[] tempStr = txt.split(",");
 			String str = tempStr[sql.useFielRuleVisible[0]];
-			for(int i=1;i<sql.useFielRuleVisible.length;i++)
+			for (int i = 1; i < sql.useFielRuleVisible.length; i++)
 			{
-				str = str + "," +  tempStr[sql.useFielRuleVisible[i]] ; 
+				str = str + "," + tempStr[sql.useFielRuleVisible[i]];
 			}
 			return str;
 		}
@@ -206,8 +236,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 	public SQL sql;
 
 	boolean eof;
-	
-	
+
 	int count = 0;
 
 	Record prev = null;
@@ -220,7 +249,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 
 	public FileRecordStore(String name, SQL sql)
 	{
-		fileName = sql.tableName + "\\" +  name;
+		fileName = sql.tableName + "\\" + name;
 		this.sql = sql;
 	}
 
@@ -247,7 +276,8 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			try
 			{
 				reader.close();
-			} catch (IOException e)
+			}
+			catch (IOException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -269,8 +299,8 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			return _Record.NULL_RECORD;
 		if (reader == null)
 		{
-			//读文件
-			//System.out.println(fileName);
+			// 读文件
+			// System.out.println(fileName);
 			InputStream in = new FileInputStream(fileName);
 			reader = new BufferedReader(new InputStreamReader(in), 12 * 1024);
 		}
@@ -285,21 +315,21 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 
 		// 分析字符串结构 只截取前半部分数字，还有后部分的结构
 		String[] intfirst = line.split(",");
-		
-		if(sql.getSelect())
+
+		if (sql.getSelect())
 		{
-			
-			//加载需排序的字段 ArrayList
+
+			// 加载需排序的字段 ArrayList
 			ArrayList<String> all = new ArrayList<>(sql.useFielRuleDisvisible.length);
-			for(int i=0;i<sql.useFielRuleDisvisible.length;i++)
+			for (int i = 0; i < sql.useFielRuleDisvisible.length; i++)
 			{
 				all.add(intfirst[sql.useFielRuleDisvisible[i]]);
 			}
 			// System.out.println(val);
-			 _Record ret = new _Record(all,line,sql);
-			 return ret;
+			_Record ret = new _Record(all, line, sql);
+			return ret;
 		}
-	
+
 		return _Record.NULL_RECORD;
 	}
 
@@ -310,9 +340,10 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		if (prev == null)
 		{
 			prev = rec;
-		} else if (prev.compareTo(rec) > 0)
+		}
+		else if (prev.compareTo(rec) > 0)
 		{
-			//throw new IOException(" sorted error!!!");
+			// throw new IOException(" sorted error!!!");
 
 		}
 		ps.println(rec.toTrueString());

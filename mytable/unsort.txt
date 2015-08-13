@@ -1,0 +1,10 @@
+1,4734.9653,尤蕴展,摩尔多瓦共和国,null
+1,2361.1805,胡询湿,墨西哥合众国,United States of Mexico
+1,8275.9969,鲍坳日,约旦哈希姆王国,Hashemite Kingdom of Jordan
+1,-7643.5958,凤杌萍,特克斯和凯科斯群岛,Turks and Caicos Islands
+1,6880.7488,樊姒琬,密克罗尼西亚联邦,Federated States of Micronesia
+1,-8516.1919,邴负盱,圣卢西亚,Saint Lucia
+1,5811.8970,谈等俪,法属波利尼西亚,French Polynesia
+1,-7337.5834,何谏骨,克罗地亚共和国,Republic of Croatia
+1,-8418.3318,萧容蹒,多哥共和国,Republic of Tago
+1,-1541.1775,岑拢颤,加拿大,Canada
