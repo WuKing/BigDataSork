@@ -48,6 +48,10 @@ public class WinnerTree
 		indexes = new int[nLeaf - 1];
 		this.stores = stores;
 		this.storesOnlyOnce = stores;
+		if(stores.length==1)
+		{
+			return;
+		}
 		for (int i = 0; i < nLeaf; i++)
 		{
 			nodes[i] = stores[i].readNextRecord();
@@ -135,6 +139,7 @@ public class WinnerTree
 
 		if(stores.length==1)
 		{
+			
 			return storesOnlyOnce[0].readNextRecord();
 		}
 		

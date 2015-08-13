@@ -136,8 +136,6 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 					// 这里注意判断FIRST LAST CHINESE
 					if (tempThis.equals("null")||tempOther.equals("null"))
 					{
-						System.out.println("null");
-						
 						if (sql.useFielRuleDisvisibleRule[i].equals("LAST"))
 						{
 							
@@ -327,12 +325,54 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			}
 			// System.out.println(val);
 			_Record ret = new _Record(all, line, sql);
+			
+			return ret;
+		}
+
+		return _Record.NULL_RECORD;
+	}
+	//新增的方法用于记录文件的行号
+	public Record readNextRecord(int a) throws IOException
+	{
+		//
+		if (eof)
+			return _Record.NULL_RECORD;
+		if (reader == null)
+		{
+			// 读文件
+			// System.out.println(fileName);
+			InputStream in = new FileInputStream(fileName);
+			reader = new BufferedReader(new InputStreamReader(in), 12 * 1024);
+		}
+		if (!reader.ready())
+		{
+			eof = true;
+			return _Record.NULL_RECORD;
+		}
+		String line = reader.readLine();
+		String[] intfirst = line.split(",");
+
+		if (sql.getSelect())
+		{
+			// 加载需排序的字段 ArrayList
+			ArrayList<String> all = new ArrayList<>(sql.useFielRuleDisvisible.length);
+			for (int i = 0; i < sql.useFielRuleDisvisible.length; i++)
+			{
+				all.add(intfirst[sql.useFielRuleDisvisible[i]]);
+			}
+			
+			// System.out.println(val);
+			_Record ret = new _Record(all, line, sql);
 			return ret;
 		}
 
 		return _Record.NULL_RECORD;
 	}
 
+	
+	
+	
+	
 	@Override
 	public void acceptRecord(Record rec) throws IOException
 	{
@@ -344,7 +384,6 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		else if (prev.compareTo(rec) > 0)
 		{
 			// throw new IOException(" sorted error!!!");
-
 		}
 		ps.println(rec.toTrueString());
 		prev = rec;
