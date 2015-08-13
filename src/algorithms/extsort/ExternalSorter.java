@@ -4,6 +4,7 @@
 package algorithms.extsort;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 import algorithms.MinHeap;
 
@@ -18,17 +19,18 @@ public class ExternalSorter
 			ResultAcceptor ra) throws IOException
 	{
 		int num = 1;
+		long indexOnce=0;;
 		int tempLimit = ((FileRecordStore)source).sql.limit;
 		MinHeap<Record> heap = new MinHeap<Record>(Record.class, heapSize);
 		for (int i = 0; i < heapSize; i++)
 		{
-			Record r = source.readNextRecord();
+			Record r = source.readNextRecord(indexOnce++);//******
 			if (r.isNull())
 				break;
 			heap.insert(r);
 		}
 
-		Record readR = source.readNextRecord();
+		Record readR = source.readNextRecord(indexOnce++);//****
 		
 		
 		while (!readR.isNull() || !heap.isEmpty())
@@ -53,7 +55,7 @@ public class ExternalSorter
 					} else
 						heap.insert(readR);
 				}
-				readR = source.readNextRecord();
+				readR = source.readNextRecord(indexOnce++);//*****
 
 			}
 			// done one run
@@ -69,14 +71,12 @@ public class ExternalSorter
 			}
 
 		}
-		
-		
+	
 		System.out.println("开始归并");
 		RecordStore[] stores=mediator.getProductedStores();
 //		LoserTree  lt=new LoserTree(stores);
 
 		WinnerTree  lt=new WinnerTree(stores);
-		
 		
 		
 		Record least=lt.nextLeastRecord();
@@ -93,7 +93,7 @@ public class ExternalSorter
 		
 		for(int i=0;i<stores.length;i++)
 		{
-			//stores[i].destroy();
+			stores[i].destroy();
 		}
 	}
 	public static void main(String[] args) throws IOException
@@ -102,7 +102,7 @@ public class ExternalSorter
 		// RunAcceptor mediator=new MemRunAcceptor();
 		// ResultAcceptor ra=new MemResultAcceptor();
 		SQL sql1 = new SQL("CREATE TABLE mytable(column1 INT NOT NULL,column2 NUMERIC(8,4),column3 CHAR(32),column4 VARCHAR(256) NOT NULL,column5 VARCHAR(256));");
-		SQL sql = new SQL("SELECT  DISTINCT column1,column5,column3 FROM mytable ORDER BY column1, LIMIT 1000;");
+		SQL sql = new SQL("SELECT  DISTINCT column1,column2 FROM mytable ORDER BY column1, LIMIT 1000;");
 		if(sql.succeed())
 		{
 			if(sql.getCreate())
@@ -120,7 +120,8 @@ public class ExternalSorter
 				//排序完成的文件名  test_sorted
 				ResultAcceptor ra = new FileRecordStore("unsorted.txt",sql);
 				//700000 80M
-				sorter.sort(1000, store, mediator, ra);
+				sorter.sort(10000, store, mediator, ra);
+				System.out.println("归并完成");
 			}
 			
 		}

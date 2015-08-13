@@ -36,7 +36,7 @@ public class FileRunAcceptor extends BaseRunAcceptor
 	@Override
 	public void closeRun()
 	{
-		System.out.println("\nend run:(" + (index + 1) + ")total:" + count);
+		System.out.println("第" + (index + 1) + "组完成,用时" + count);
 
 		((FileRecordStore) stores[index]).compact();
 	}
@@ -63,7 +63,7 @@ public class FileRunAcceptor extends BaseRunAcceptor
 	@Override
 	protected void initStore(int i)
 	{
-		System.out.println("start new run:");
+		//System.out.println("run:(1)start");
 		// count=0;
 		stores[i] = new FileRecordStore(name + "_" + i,sql);
 

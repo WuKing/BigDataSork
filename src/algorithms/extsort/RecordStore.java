@@ -14,7 +14,7 @@ import java.io.IOException;
 public interface RecordStore
 {
 	Record readNextRecord() throws IOException;
-
+	Record readNextRecord(long index) throws IOException;
 	void destroy();
 
 }

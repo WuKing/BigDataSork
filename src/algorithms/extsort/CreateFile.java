@@ -294,7 +294,7 @@ public class CreateFile
 	
 	public String CreateDateBase(String str)
 	{
-		return this.CreateInt() + str + this.CreateFloat() + str + this.CreateName() + str + this.CreateCountry();
+		return 1 + str + this.CreateFloat() + str + this.CreateName() + str + this.CreateCountry();
 	}
 	
 	public static void main(String[] args) throws Exception
@@ -308,7 +308,7 @@ public class CreateFile
 		Random r = new Random();
 
 		// for (int i = 0; i < 100000000; i++)//5.5G
-		for (int i = 0; i < 10; i++)//5.5G
+		for (int i = 0; i < 1000; i++)//5.5G
 		{
 			//ps.println(r.nextInt(10000000) + "             this  a line line aaaaaaaaa!");
 			ps.println(cf.CreateDateBase());

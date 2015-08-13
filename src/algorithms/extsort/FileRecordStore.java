@@ -35,6 +35,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		private String txt;
 		private SQL sql;
 		public ArrayList<String> all;
+		private int indexOnce = -1;
 
 		_Record(ArrayList<String> all, String txt, SQL sql)
 		{
@@ -92,7 +93,8 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			{
 				return 1;
 			}
-			for (int i = 0; i < all.size(); i++)
+			
+			for (int i = 0; i < sql.useFielRuleDisvisible.length; i++)
 			{
 				//System.out.println(sql.useFielRuleDisvisibleType[i]);
 				if (sql.useFielRuleDisvisibleType[i].equals("Float"))
@@ -202,6 +204,11 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 					}
 				}
 			}
+			if(sql.useFielRuleDisvisible.length == all.size()-1)
+			{
+				return ((int) Integer.valueOf(all.get(sql.useFielRuleDisvisible.length)) - (int) Integer.valueOf(other.all.get(sql.useFielRuleDisvisible.length)));
+			}
+			
 			return 0;
 		}
 
@@ -332,7 +339,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		return _Record.NULL_RECORD;
 	}
 	//新增的方法用于记录文件的行号
-	public Record readNextRecord(int a) throws IOException
+	public Record readNextRecord(long index) throws IOException
 	{
 		//
 		if (eof)
@@ -360,7 +367,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			{
 				all.add(intfirst[sql.useFielRuleDisvisible[i]]);
 			}
-			
+			all.add(index + "");
 			// System.out.println(val);
 			_Record ret = new _Record(all, line, sql);
 			return ret;

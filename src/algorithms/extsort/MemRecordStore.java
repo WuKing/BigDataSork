@@ -127,4 +127,11 @@ public class MemRecordStore implements RecordStore
 
 	}
 
+	@Override
+	public Record readNextRecord(long index) throws IOException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
