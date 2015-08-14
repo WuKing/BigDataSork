@@ -3,12 +3,15 @@
  */
 package algorithms.extsort;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 import algorithms.MinHeap;
 
@@ -116,7 +119,7 @@ public class ExternalSorter
 
 		for (int i = 0; i < stores.length; i++)
 		{
-			// stores[i].destroy();
+			stores[i].destroy();
 		}
 	}
 	public static String converLongTimeToStr(long time) {
@@ -139,6 +142,52 @@ public class ExternalSorter
 	}
 	public static void main(String[] args) throws IOException, ParseException
 	{
+		
+		/*
+		 * //测试程序
+		FileHandler fileHandler = new FileHandler("sork.log");
+		Logger log = Logger.getLogger("BigSork");
+		log.addHandler(fileHandler);
+		
+		//for(int j=1;j<=51;j++)
+		{
+			int j=10;
+			SQL sql1 = new SQL("CREATE TABLE mytable(column1 INT NOT NULL,column2 NUMERIC(8,4),column3 CHAR(32),column4 VARCHAR(256) NOT NULL,column5 VARCHAR(256));");
+			SQL sql = new SQL("SELECT  DISTINCT column1,column2,column3 FROM mytable ORDER BY column4, LIMIT 1000;");
+			if (sql.succeed())
+			{
+				if (sql.getCreate())
+				{
+					System.out.println("数据库创建成功");
+				}
+				else if (sql.getSelect())
+				{
+					System.out.println("开始排序");
+					long startTime = System.currentTimeMillis();
+					ExternalSorter sorter = new ExternalSorter();
+					// 需要排序的文件名
+					RecordStore store = new FileRecordStore("unsort" + j +".txt", sql);
+					// 排序的零食文件名
+					RunAcceptor mediator = new FileRunAcceptor("unsort" + j +""  , sql);
+					// 排序完成的文件名 test_sorted
+					ResultAcceptor ra = new FileRecordStore("unsorted" + j +".txt", sql);
+					// 700000 80M
+					sorter.sort(1000000, store, mediator, ra);
+					//System.out.println("归并完成");
+					long endTime = System.currentTimeMillis();
+					long useTime = endTime - startTime;
+					
+					File f = new File("mytable\\unsort" + j + ".txt");
+					 
+					log.info( "          " + j  + " 大小 " + f.length() + "  花费时间" + useTime + "毫秒");
+					System.out.println( "          " + j  + " 大小 " + f.length() + "  花费时间" + useTime + "毫秒");
+				}
+			}
+		}
+		*/
+		
+		
+		
 		// RecordStore store=new MemRecordStore(60004,true);
 		// RunAcceptor mediator=new MemRunAcceptor();
 		// ResultAcceptor ra=new MemResultAcceptor();
@@ -164,7 +213,7 @@ public class ExternalSorter
 				// 排序完成的文件名 test_sorted
 				ResultAcceptor ra = new FileRecordStore("unsorted.txt", sql);
 				// 700000 80M
-				sorter.sort(10000, store, mediator, ra);
+				sorter.sort(1000000, store, mediator, ra);
 				System.out.println("归并完成");
 				long endTime = System.currentTimeMillis();
 				long useTime = endTime - startTime;

@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
@@ -74,7 +75,19 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		//
 		// return value - other.value;
 		// }
+		//ChangeCharset tempUTF = new ChangeCharset();
+		public static String utf8ToUnicode(String inStr) {
+			  char[] myBuffer = inStr.toCharArray();
 
+			  StringBuffer sb = new StringBuffer();
+			  for (char c : myBuffer) 
+			  {
+			   String hexS = Integer.toHexString(c);
+			   String unicode = "\\u" + hexS;
+			   sb.append(unicode.toLowerCase());
+			  }
+			  return sb.toString();
+			 }
 		@Override
 		public int compareTo(Record o)
 		{
@@ -188,7 +201,12 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 						}
 						else
 						{
-							tempString = ((String) this.all.get(i)).compareTo((String) other.all.get(i));
+							
+				
+							//System.out.println(this.all.get(i));
+							//System.out.println( utf8ToUnicode(this.all.get(i))); 		
+							
+							tempString = (this.all.get(i)).compareTo(other.all.get(i));
 							if (tempString > 0)
 							{
 								return 1;
@@ -207,6 +225,9 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			}
 			if (sql.useFielRuleDisvisible.length == all.size() - 1)
 			{
+			
+				
+				
 				return (new BigInteger(all.get(sql.useFielRuleDisvisible.length)).compareTo(new BigInteger(other.all.get(sql.useFielRuleDisvisible.length))));
 			}
 
@@ -264,7 +285,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		if (ps == null)
 		{
 			OutputStream out = new FileOutputStream(fileName);
-			ps = new PrintStream(new BufferedOutputStream(out, 12 * 1024));
+			ps = new PrintStream(new BufferedOutputStream(out, 12 * 1024),false,"UTF8");//******
 		}
 		ps.println(r.toString());
 	}
@@ -308,7 +329,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			// 读文件
 			// System.out.println(fileName);
 			InputStream in = new FileInputStream(fileName);
-			reader = new BufferedReader(new InputStreamReader(in), 12 * 1024);
+			reader = new BufferedReader(new InputStreamReader(in,"UTF8"), 12 * 1024);
 		}
 		if (!reader.ready())
 		{
@@ -351,7 +372,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			// 读文件
 			// System.out.println(fileName);
 			InputStream in = new FileInputStream(fileName);
-			reader = new BufferedReader(new InputStreamReader(in), 12 * 1024);
+			reader = new BufferedReader(new InputStreamReader(in,"UTF8"), 12 * 1024);
 		}
 		if (!reader.ready())
 		{
@@ -412,7 +433,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		if (ps == null)
 		{
 			OutputStream out = new FileOutputStream(fileName);
-			ps = new PrintStream(new BufferedOutputStream(out, 12 * 1024));
+			ps = new PrintStream(new BufferedOutputStream(out, 12 * 1024),false,"UTF8");
 		}
 
 	}

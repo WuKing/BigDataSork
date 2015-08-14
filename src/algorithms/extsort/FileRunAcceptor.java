@@ -37,7 +37,6 @@ public class FileRunAcceptor extends BaseRunAcceptor
 	public void closeRun()
 	{
 		System.out.println("第" + (index + 1) + "组完成,完成了" + count + "条数据");
-
 		((FileRecordStore) stores[index]).compact();
 	}
 

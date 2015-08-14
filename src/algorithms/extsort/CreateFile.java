@@ -303,7 +303,47 @@ public class CreateFile
 	
 	public static void main(String[] args) throws Exception
 	{
+		
+		
+		/*
+		//修改内容开始
+		//for(int j=1;j<50;j++)
+		{
+			int j=10;
+			CreateFile cf = new CreateFile();
+			//test_sort
+			OutputStream out = new FileOutputStream("unsort" + j + ".txt");
+			PrintStream ps = new PrintStream(new BufferedOutputStream(out,12 * 1024),false,"UTF8");
 
+			Random r = new Random();
+
+			// for (int i = 0; i < 100000000; i++)//5.5G
+			for (int i = 0; i < 100000*j; i++)//5.5G
+			{
+				//ps.println(r.nextInt(10000000) + "             this  a line line aaaaaaaaa!");
+				ps.println(cf.CreateDateBase());
+				//System.out.println(cf.CreateDateBase());
+			}
+			ps.close();
+			System.out.println(j  +  "  Create Succeed");
+		}
+		
+		
+		
+		
+		
+		//修改内容结束
+		
+		
+		*/
+		
+		
+		
+		
+		
+		
+		
+		//原来的内容
 		CreateFile cf = new CreateFile();
 		//test_sort
 		OutputStream out = new FileOutputStream("unsort.txt");
