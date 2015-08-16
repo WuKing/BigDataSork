@@ -38,7 +38,8 @@ public class TestChinese
 				int a = Integer.parseInt(bytes2HexString(bs[i]), 16);
 				s += (a - 0x80 - 0x20) + "";
 			}
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -74,7 +75,6 @@ public class TestChinese
 	{
 		return (int) (Math.random() * (max - min + 1) + min);
 	}
-	
 
 	// 区码: 汉字内码高位 - 0xA0 位码: 汉字内码低位 - 0xa0
 	// 区号：01－87，汉字从16区开始,前15区为各种符号
@@ -92,7 +92,8 @@ public class TestChinese
 		if (wei < 10)
 		{
 			code = String.valueOf(qu) + "0" + String.valueOf(wei);
-		} else
+		}
+		else
 		{
 			code = String.valueOf(qu) + String.valueOf(wei);
 		}

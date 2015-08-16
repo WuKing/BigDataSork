@@ -4,10 +4,14 @@
 package algorithms.extsort;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Random;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+
 import algorithms.extsort.TestChinese;
 /**
  * @author Jackey
@@ -286,7 +290,6 @@ public class CreateFile
 		num = pickRandom(0, (this.COUNTRY_CH).length -1);
 		
 		
-		
 		return this.COUNTRY_CH[num] + str + (pickRandom(0,999999)==5?"null":this.COUNTRY_EN[num]);
 	}
 	
@@ -305,61 +308,57 @@ public class CreateFile
 	{
 		
 		
-		/*
-		//修改内容开始
-		//for(int j=1;j<50;j++)
+
+		CreateFile cf = new CreateFile();
+		//test_sort
+		OutputStream out = new FileOutputStream("unsort.txt");
+		PrintStream ps = new PrintStream(new BufferedOutputStream(out,12 * 1024),false,"UTF8");
+
+		Random r = new Random();
+
+
+		for (int i = 0; i < 10; i++)//5.5G     351000000
 		{
-			int j=10;
+			ps.println(cf.CreateDateBase());
+		}
+		ps.close();
+		System.out.println("  Create Succeed");
+		
+		
+		
+		
+		
+		
+		/*
+		
 			CreateFile cf = new CreateFile();
 			//test_sort
-			OutputStream out = new FileOutputStream("unsort" + j + ".txt");
+			OutputStream out = new FileOutputStream("unsort.txt");
 			PrintStream ps = new PrintStream(new BufferedOutputStream(out,12 * 1024),false,"UTF8");
 
 			Random r = new Random();
 
 			// for (int i = 0; i < 100000000; i++)//5.5G
-			for (int i = 0; i < 100000*j; i++)//5.5G
+			int j = 3100;//20.2G
+			int jj=0;
+			int jjj=0;
+			for (int i = 0; i < 100000*j; i++)//5.5G     351000000
 			{
-				//ps.println(r.nextInt(10000000) + "             this  a line line aaaaaaaaa!");
 				ps.println(cf.CreateDateBase());
-				//System.out.println(cf.CreateDateBase());
+				jj++;
+				if(jj>=100000)
+				{
+					jj=0;
+					jjj++;
+					System.out.println(j-jjj);
+				}
+				
 			}
 			ps.close();
-			System.out.println(j  +  "  Create Succeed");
-		}
-		
-		
-		
-		
-		
-		//修改内容结束
-		
-		
+			System.out.println("  Create Succeed");
 		*/
 		
-		
-		
-		
-		
-		
-		
-		//原来的内容
-		CreateFile cf = new CreateFile();
-		//test_sort
-		OutputStream out = new FileOutputStream("unsort.txt");
-		PrintStream ps = new PrintStream(new BufferedOutputStream(out,12 * 1024));
 
-		Random r = new Random();
-
-		// for (int i = 0; i < 100000000; i++)//5.5G
-		for (int i = 0; i < 100000; i++)//5.5G
-		{
-			//ps.println(r.nextInt(10000000) + "             this  a line line aaaaaaaaa!");
-			ps.println(cf.CreateDateBase());
-			//System.out.println(cf.CreateDateBase());
-		}
-		ps.close();
-		System.out.println("Create Succeed");
 	}
 
 }

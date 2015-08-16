@@ -1,14 +1,7 @@
-/**
- * 
- */
 package algorithms.extsort;
 
 import java.io.IOException;
 
-/**
- * @author yovn
- *
- */
 public abstract class BaseRunAcceptor implements RunAcceptor
 {
 
@@ -63,9 +56,6 @@ public abstract class BaseRunAcceptor implements RunAcceptor
 		return index + 1;
 	}
 	
-	/*
-	 *-- 
-	 */
 	public final RecordStore[] getProductedStores()
 	{
 

@@ -1,11 +1,18 @@
 package algorithms.extsort;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -42,6 +49,8 @@ public class SQL
 	// 是否已经规定了数据库的排序规则
 	private boolean select = false;
 
+	
+	
 	
 	//检测语句是否成功
 	public boolean succeed()
@@ -110,9 +119,9 @@ public class SQL
 	private String SELECTRule(String str)
 	{
 		String[] ruleFalse = { "select", "distinct", "from", "order", "by",
-				"nulls", "first", "last", "limit", "collate", "chinses" };
+				"nulls", "first", "last", "limit", "collate", "chinese","utf8"};
 		String[] ruleTrue = { "SELECT", "DISTINCT", "FROM", "ORDER", "BY",
-				"NULLS", "FIRST", "LAST", "LIMIT", "COLLATE", "CHINSES" };
+				"NULLS", "FIRST", "LAST", "LIMIT", "COLLATE", "CHINESE","UTF8"};
 		return importantWord(str, ruleFalse, ruleTrue);
 	}
 
@@ -132,7 +141,7 @@ public class SQL
 
 	}
 
-	private String ruleAll(String str)
+	private String ruleAllRule(String str)
 	{
 		str = this.createRule(str);
 		str = this.insertRule(str);
@@ -142,6 +151,9 @@ public class SQL
 
 	private boolean runCreate(String str)
 	{
+
+		
+		
 		try
 		{
 			int now = -1;
@@ -150,6 +162,7 @@ public class SQL
 			String tempStr = "";
 			if ((now = str.indexOf("CREATE TABLE")) == 0)
 			{
+			
 				// 判断完成
 				// System.out.println(now+"CREATE TABLE".length() );
 				left = str.indexOf("(");
@@ -163,17 +176,20 @@ public class SQL
 				{
 					tempStr = tempStr.substring(0, tempStr.lastIndexOf(","));
 				}
-				Pattern p = Pattern.compile("\\([\\d|\\d,\\d]*\\)| NOT NULL");
+				Pattern p = Pattern.compile("\\([\\d|\\d,\\d]*\\)|NOT NULL");
 				Matcher m = p.matcher(tempStr);
 				tempStr = m.replaceAll("");
-
+				
 				tableFieldName = tempStr.split(",");
 				tableFiledType = tempStr.split(",");
+
+				
 				for (int i = 0; i < tableFieldName.length; i++)
 				{
 					tableFieldName[i] = tableFieldName[i].split(" ")[0];
 					// 修正类型
 					tableFiledType[i] = tableFiledType[i].split(" ")[1];
+					//System.out.println(tableFiledType[i]);
 					switch (tableFiledType[i])
 					{
 					case "INT":
@@ -190,7 +206,7 @@ public class SQL
 						throw new Exception();
 					}
 				}
-
+			
 				// 创建项目文件夹
 				File directory = new File("");// 参数为空
 				String courseFile = directory.getCanonicalPath();
@@ -208,13 +224,20 @@ public class SQL
 						try
 						{
 
-							BufferedWriter writer = new BufferedWriter(
-									new FileWriter(document));
-
-							writer.write(str);
-							// writer.flush();
-							writer.close();
+//							BufferedWriter writer = new BufferedWriter(
+//									new FileWriter(document));
+//
+//							writer.write(str);
+//							// writer.flush();
+//							writer.close();
 							// 这里完成创建数据库
+							OutputStream out = new FileOutputStream(document);
+							PrintStream ps = new PrintStream(new BufferedOutputStream(out, 12 * 1024),false,"UTF8");
+							ps.print(str);
+							ps.flush();
+							ps.close();
+							
+							
 							return true;
 						} catch (IOException e)
 						{
@@ -248,13 +271,24 @@ public class SQL
 			if (document.exists())
 			{
 
-				BufferedReader reader = new BufferedReader(new FileReader(
-						document));
-
+//				BufferedReader reader = new BufferedReader(new FileReader(
+//						document));
+//
+//				runCreate(reader.readLine());
+//				// writer.flush();
+//				reader.close();
+				// 这里完成创建数据库
+				
+				InputStream in = new FileInputStream(document);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(in), 12 * 1024);
+				
 				runCreate(reader.readLine());
 				// writer.flush();
 				reader.close();
-				// 这里完成创建数据库
+				
+				
+				
+				
 				return true;
 			}
 
@@ -274,6 +308,7 @@ public class SQL
 		String tempStr = "";
 		if ((now = str.indexOf("SELECT")) == 0)
 		{
+			
 			// 这里要看是规范语句
 			try
 			{
@@ -285,10 +320,10 @@ public class SQL
 					now = 16;
 				} else
 				{
-					now = 5;
+					now = 7;
 					this.distinct = false;
 				}
-
+				
 				// 获取需要排序的字段
 
 				// 读取数据库名称
@@ -299,6 +334,7 @@ public class SQL
 				// 加载表头集合
 				ArrayList<String> useFielRuleVisibleALL = new ArrayList<>(
 						tableFieldName.length);
+			
 				for (int i = 0; i < tableFieldName.length; i++)
 				{
 					useFielRuleVisibleALL.add(tableFieldName[i]);
@@ -308,19 +344,22 @@ public class SQL
 				useFielRuleDisvisibleALL.add("FIRST");
 				useFielRuleDisvisibleALL.add("LAST");
 				useFielRuleDisvisibleALL.add("CHINESE");
+				useFielRuleDisvisibleALL.add("UTF8");
 				String[] useFielRuleDisvisibleArray = { "FIRST", "LAST",
-						"CHINESE" };
+						"CHINESE","UTF8"};
+				
 				for (int i = 0; i < tableFieldName.length; i++)
 				{
 					useFielRuleVisibleALL.add(tableFieldName[i]);
 				}
 
 				// 分析得到排序规则字段
-
 				String useFielRuleVisibleStr = str.substring(now,
 						str.indexOf(" ", now));
+				//System.out.println(useFielRuleVisibleStr);
 				String[] useFielRuleVisibleStrArray = useFielRuleVisibleStr
 						.split(",");
+	
 				useFielRuleVisible = new int[useFielRuleVisibleStrArray.length];
 				// 根据循环找到需要排序的字符
 				for (int i = 0; i < useFielRuleVisibleStrArray.length; i++)
@@ -343,6 +382,7 @@ public class SQL
 
 					}
 				}
+				
 				now = str.indexOf(tableName) + tableName.length() + 1;
 				// 开始匹配需要显示的字段
 				// 判断是否缺省显示
@@ -366,7 +406,8 @@ public class SQL
 					{
 						tempNow--;
 					}
-
+					
+					
 					tempuseFielRuleDisvisibleStr = tempuseFielRuleDisvisibleStr
 							.substring(0, tempNow);
 					String[] tempuseFielRuleDisvisibleArray = tempuseFielRuleDisvisibleStr
@@ -374,7 +415,7 @@ public class SQL
 					useFielRuleDisvisible = new int[tempuseFielRuleDisvisibleArray.length];
 					useFielRuleDisvisibleRule = new String[tempuseFielRuleDisvisibleArray.length];
 					String[] tempstrEach;
-
+				
 					for (int i = 0; i < tempuseFielRuleDisvisibleArray.length; i++)
 					{
 						tempstrEach = tempuseFielRuleDisvisibleArray[i]
@@ -399,6 +440,7 @@ public class SQL
 							}
 						} else if (tempstrEach.length == 3)
 						{
+						
 							// 拥有规则 一共三种 并且要提前检查
 							// 没有规则直接获取
 							for (int j = 0; j < tableFieldName.length; j++)
@@ -441,7 +483,7 @@ public class SQL
 							return false;
 						}
 					}
-					
+				
 					//满足需要显示的字段类型
 					useFielRuleDisvisibleType = new String[useFielRuleDisvisible.length];
 					for(int i =0;i<useFielRuleDisvisible.length;i++)
@@ -449,8 +491,7 @@ public class SQL
 						useFielRuleDisvisibleType[i] = tableFiledType[useFielRuleDisvisible[i]];
 					}
 					
-					
-					
+				
 					
 					//检查LIMIT
 					if((now = str.indexOf("LIMIT"))==-1)
@@ -526,18 +567,18 @@ public class SQL
 		//显示的数据量
 		System.out.println("显示的数据量" +limit);
 
-		
-		
 		*/
+		
+		
 
 		return true;
 	}
 
 	private boolean runAll(String str)
 	{
-		create = false;
-		select = false;
-		return (select = runSelect(str)) || (create =  runCreate(str));
+		create = runCreate(str);
+		select =  runSelect(str);
+		return  create|| select;
 	}
 
 	// 一切SQL语句的入口
@@ -547,12 +588,11 @@ public class SQL
 		str = replaceBlank(str);
 
 		// 2.优化关键字
-		str = ruleAll(str);
-
-		//System.out.println(str);
+		str = ruleAllRule(str);
+		
+		
 
 		// 3.执行语句
-		//System.out.println(runAll(str));
 		runAll(str);
 	}
 //	public static void main(String args[])

@@ -65,7 +65,7 @@ public class ExternalSorter
 						heap.insert(readR);
 				}
 				readR = source.readNextRecord(indexOnce = indexOnce.add(bigOne));// *****
-
+				
 			}
 			// done one run
 			mediator.closeRun();
@@ -76,15 +76,13 @@ public class ExternalSorter
 			{
 				heap.insert(readR);
 				readR = source.readNextRecord();
-
 			}
 
 		}
 
-		System.out.println("开始归并");
 		RecordStore[] stores = mediator.getProductedStores();
 		// LoserTree lt=new LoserTree(stores);
-
+		System.out.println("分包完成,一共拆分了" + stores.length + "个包，开始合并");
 		WinnerTree lt = new WinnerTree(stores);
 
 		Record least = lt.nextLeastRecord();
@@ -107,7 +105,6 @@ public class ExternalSorter
 			}
 			else if (!tempDistinct)
 			{
-				System.out.println("b");
 				nowLimit = nowLimit.add(bigOne);// nowLimit++
 				ra.acceptRecord(least);
 			}
@@ -122,7 +119,9 @@ public class ExternalSorter
 			stores[i].destroy();
 		}
 	}
-	public static String converLongTimeToStr(long time) {
+
+	public static String converLongTimeToStr(long time)
+	{
 		int ss = 1000;
 		int mi = ss * 60;
 		int hh = mi * 60;
@@ -134,67 +133,28 @@ public class ExternalSorter
 		String strHour = hour < 10 ? "0" + hour : "" + hour;
 		String strMinute = minute < 10 ? "0" + minute : "" + minute;
 		String strSecond = second < 10 ? "0" + second : "" + second;
-		if (hour > 0) {
+		if (hour > 0)
+		{
 			return strHour + ":" + strMinute + ":" + strSecond;
-		} else {
+		}
+		
+		else
+		{
 			return strMinute + ":" + strSecond;
 		}
 	}
+
 	public static void main(String[] args) throws IOException, ParseException
 	{
-		
-		/*
-		 * //测试程序
-		FileHandler fileHandler = new FileHandler("sork.log");
-		Logger log = Logger.getLogger("BigSork");
-		log.addHandler(fileHandler);
-		
-		//for(int j=1;j<=51;j++)
-		{
-			int j=10;
-			SQL sql1 = new SQL("CREATE TABLE mytable(column1 INT NOT NULL,column2 NUMERIC(8,4),column3 CHAR(32),column4 VARCHAR(256) NOT NULL,column5 VARCHAR(256));");
-			SQL sql = new SQL("SELECT  DISTINCT column1,column2,column3 FROM mytable ORDER BY column4, LIMIT 1000;");
-			if (sql.succeed())
-			{
-				if (sql.getCreate())
-				{
-					System.out.println("数据库创建成功");
-				}
-				else if (sql.getSelect())
-				{
-					System.out.println("开始排序");
-					long startTime = System.currentTimeMillis();
-					ExternalSorter sorter = new ExternalSorter();
-					// 需要排序的文件名
-					RecordStore store = new FileRecordStore("unsort" + j +".txt", sql);
-					// 排序的零食文件名
-					RunAcceptor mediator = new FileRunAcceptor("unsort" + j +""  , sql);
-					// 排序完成的文件名 test_sorted
-					ResultAcceptor ra = new FileRecordStore("unsorted" + j +".txt", sql);
-					// 700000 80M
-					sorter.sort(1000000, store, mediator, ra);
-					//System.out.println("归并完成");
-					long endTime = System.currentTimeMillis();
-					long useTime = endTime - startTime;
-					
-					File f = new File("mytable\\unsort" + j + ".txt");
-					 
-					log.info( "          " + j  + " 大小 " + f.length() + "  花费时间" + useTime + "毫秒");
-					System.out.println( "          " + j  + " 大小 " + f.length() + "  花费时间" + useTime + "毫秒");
-				}
-			}
-		}
-		*/
-		
-		
-		
+
 		// RecordStore store=new MemRecordStore(60004,true);
 		// RunAcceptor mediator=new MemRunAcceptor();
 		// ResultAcceptor ra=new MemResultAcceptor();
-
-		// System.out.println(startTime);
-		SQL sql1 = new SQL("CREATE TABLE mytable(column1 INT NOT NULL,column2 NUMERIC(8,4),column3 CHAR(32),column4 VARCHAR(256) NOT NULL,column5 VARCHAR(256));");
-		SQL sql = new SQL("SELECT  DISTINCT column1,column2,column3 FROM mytable ORDER BY column1, LIMIT 1000;");
+		// SQL sql1 = new
+		//SQL sql1 =new  SQL("CREATE TABLE mytable(column1 INT NOT NULL,column2 NUMERIC(8,4),column3 CHAR(32),column4 VARCHAR(256) NOT NULL,column5 VARCHAR(256));");
+		// SQL sql1 = new SQL("CREATE TABLE test(a1 INT NOT NULL,a2 NUMERIC(4,2),a3 CHAR(32));");
+		SQL sql = new SQL("SELECT a1,a2,a3 FROM test ORDER BY a3;");
+		//SQL sql = new SQL("SELECT  column1,column2,column3,column4,column5 FROM mytable ORDER BY column4  COLLATE CHINESE;");
 		if (sql.succeed())
 		{
 			if (sql.getCreate())
@@ -212,17 +172,15 @@ public class ExternalSorter
 				RunAcceptor mediator = new FileRunAcceptor("unsort", sql);
 				// 排序完成的文件名 test_sorted
 				ResultAcceptor ra = new FileRecordStore("unsorted.txt", sql);
-				// 700000 80M
+				// 700000 80M    1000000
 				sorter.sort(1000000, store, mediator, ra);
-				System.out.println("归并完成");
+				// System.out.println("归并完成");
 				long endTime = System.currentTimeMillis();
 				long useTime = endTime - startTime;
-				System.out.println("花费时间" + useTime + "毫秒");
+				System.out.println("完成排序花费时间" + useTime + "毫秒");
 			}
 
 		}
-		
-		
 
 	}
 

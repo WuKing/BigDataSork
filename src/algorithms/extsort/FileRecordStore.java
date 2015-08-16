@@ -76,18 +76,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		// return value - other.value;
 		// }
 		//ChangeCharset tempUTF = new ChangeCharset();
-		public static String utf8ToUnicode(String inStr) {
-			  char[] myBuffer = inStr.toCharArray();
-
-			  StringBuffer sb = new StringBuffer();
-			  for (char c : myBuffer) 
-			  {
-			   String hexS = Integer.toHexString(c);
-			   String unicode = "\\u" + hexS;
-			   sb.append(unicode.toLowerCase());
-			  }
-			  return sb.toString();
-			 }
+	
 		@Override
 		public int compareTo(Record o)
 		{
@@ -149,7 +138,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 				{
 					String tempThis = all.get(i);
 					String tempOther = other.all.get(i);
-					// 这里注意判断FIRST LAST CHINESE
+					// 这里注意判断FIRST LAST CHINESE UTF8
 					if (tempThis.equals("null") || tempOther.equals("null"))
 					{
 						if (sql.useFielRuleDisvisibleRule[i].equals("LAST"))
@@ -199,12 +188,12 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 							}
 
 						}
-						else
+						else if(sql.useFielRuleDisvisibleRule[i].equals("UTF8"))
 						{
-							
-				
 							//System.out.println(this.all.get(i));
-							//System.out.println( utf8ToUnicode(this.all.get(i))); 		
+							//System.out.println( this.all.get(i)  + "  " +  utf8ToUnicode(this.all.get(i)).compareTo(utf8ToUnicode(other.all.get(i))) + "  " +  other.all.get(i)); 
+							//tempString = TestChinese.utf8ToUnicode(this.all.get(i)).compareTo(TestChinese.utf8ToUnicode(other.all.get(i)));
+							//*******
 							
 							tempString = (this.all.get(i)).compareTo(other.all.get(i));
 							if (tempString > 0)
@@ -220,14 +209,33 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 
 							}
 						}
+							
+						else
+						{	
+							tempString = (this.all.get(i)).compareTo(other.all.get(i));
+							if (tempString > 0)
+							{
+								return 1;
+							}
+							else if (tempString < 0)
+							{
+								return -1;
+							}
+							else
+							{
+
+							}
+						}
 					}
+					
+					
+					
+					
 				}
 			}
-			if (sql.useFielRuleDisvisible.length == all.size() - 1)
+			//稳定排序
+			if (sql.useFielRuleDisvisible.length == all.size() - 1 && !sql.distinct)
 			{
-			
-				
-				
 				return (new BigInteger(all.get(sql.useFielRuleDisvisible.length)).compareTo(new BigInteger(other.all.get(sql.useFielRuleDisvisible.length))));
 			}
 
@@ -285,7 +293,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		if (ps == null)
 		{
 			OutputStream out = new FileOutputStream(fileName);
-			ps = new PrintStream(new BufferedOutputStream(out, 12 * 1024),false,"UTF8");//******
+			ps = new PrintStream(new BufferedOutputStream(out, 12 * 1024),false,"UTF8");
 		}
 		ps.println(r.toString());
 	}
@@ -336,8 +344,8 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			eof = true;
 			return _Record.NULL_RECORD;
 		}
-		String line = reader.readLine();
-
+		String line =reader.readLine();
+		
 		// String head = line.substring(0, 10).trim();
 
 		// 分析字符串结构 只截取前半部分数字，还有后部分的结构
@@ -348,13 +356,13 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 
 			// 加载需排序的字段 ArrayList
 			ArrayList<String> all = new ArrayList<>(sql.useFielRuleDisvisible.length);
+			//System.out.println(sql.useFielRuleDisvisible.length + " " + intfirst.length);
 			for (int i = 0; i < sql.useFielRuleDisvisible.length; i++)
 			{
 				all.add(intfirst[sql.useFielRuleDisvisible[i]]);
 			}
 			// System.out.println(val);
 			_Record ret = new _Record(all, line, sql);
-
 			return ret;
 		}
 
@@ -372,7 +380,7 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 			// 读文件
 			// System.out.println(fileName);
 			InputStream in = new FileInputStream(fileName);
-			reader = new BufferedReader(new InputStreamReader(in,"UTF8"), 12 * 1024);
+			reader = new BufferedReader(new InputStreamReader(in,"UTF8"), 12 * 1024);//***********
 		}
 		if (!reader.ready())
 		{
@@ -381,10 +389,10 @@ public class FileRecordStore implements RecordStore, ResultAcceptor
 		}
 		String line = reader.readLine();
 		String[] intfirst = line.split(",");
-
 		if (sql.getSelect())
 		{
 			// 加载需排序的字段 ArrayList
+			//System.out.println(sql.useFielRuleDisvisible.length);
 			ArrayList<String> all = new ArrayList<>(sql.useFielRuleDisvisible.length);
 			for (int i = 0; i < sql.useFielRuleDisvisible.length; i++)
 			{

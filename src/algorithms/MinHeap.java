@@ -15,10 +15,7 @@ public class MinHeap<E extends Comparable<E>>
 			this.values=(E[])Array.newInstance(clazz,num);
 			len=0;
 			reclaimPos=num;
-			
 		}
-			
-		
 		
 		public final E removeMin()
 		{
@@ -38,13 +35,11 @@ public class MinHeap<E extends Comparable<E>>
 		{
 			values[len++]=val;
 			shift_up(len-1);
-			
 		}
 		
 		public final void reverse()
 		{
 			len=values.length-reclaimPos;
-			
 			if(len==0)return;
 			System.arraycopy(values,reclaimPos, values, 0, len);
 			reclaimPos=values.length;
@@ -119,7 +114,6 @@ public class MinHeap<E extends Comparable<E>>
 		    		values[pos]=values[index];
 		    		pos=index;
 			    	index=pos*2+1;
-			    	
 		    	}
 		    	else
 		    	{

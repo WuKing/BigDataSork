@@ -1,14 +1,8 @@
-/**
- * 
- */
+
 package algorithms.extsort;
 
 import java.io.IOException;
 
-/**
- * @author yovn
- *
- */
 //文件运转
 public class FileRunAcceptor extends BaseRunAcceptor
 {
@@ -16,9 +10,8 @@ public class FileRunAcceptor extends BaseRunAcceptor
 	int count = 0;
 	private String name;
 	private SQL sql;
-	/**
-	 * 
-	 */
+
+	
 	public FileRunAcceptor(String fileName,SQL sql)
 	{
 		stores = new FileRecordStore[50];
@@ -63,7 +56,6 @@ public class FileRunAcceptor extends BaseRunAcceptor
 	protected void initStore(int i)
 	{
 		//System.out.println("run:(1)start");
-		// count=0;
 		stores[i] = new FileRecordStore(name + "_" + i,sql);
 
 	}
